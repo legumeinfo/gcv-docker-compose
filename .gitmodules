@@ -1,3 +1,6 @@
 [submodule "gcv"]
 	path = gcv
 	url = https://github.com/legumeinfo/gcv
+[submodule "microservices"]
+	path = microservices
+	url = https://github.com/legumeinfo/microservices
