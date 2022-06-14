@@ -1,0 +1,12 @@
+services:
+  gcv:
+    build:
+      context: .
+      target: prod
+    ports:
+      - "4200:80"
+    volumes:
+      - .:/gcv
+      - /gcv/dep
+      - /gcv/scripts
+    restart: always
