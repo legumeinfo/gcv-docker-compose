@@ -6,7 +6,7 @@ services:
     ports:
       - "4200:4200"
     volumes:
-      - .:/gcv
+      - ./gcv:/gcv
       - /gcv/dep
       - /gcv/scripts
       - /gcv/node_modules
