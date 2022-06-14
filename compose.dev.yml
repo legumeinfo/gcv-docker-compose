@@ -10,3 +10,45 @@ services:
       - /gcv/dep
       - /gcv/scripts
       - /gcv/node_modules
+
+  reverse-proxy:
+    ports:
+      - "80:80"
+      - "8080:8080"
+    command:
+      - "--log.level=DEBUG"
+      - "--api.insecure=true"
+
+  envoy:
+    environment:
+      loglevel: debug
+
+  chromosome:
+    build: chromosome
+
+  chromosome_search:
+    build: chromosome_search
+
+  chromosome_region:
+    build: chromosome_region
+
+  genes:
+    build: genes
+
+  gene_search:
+    build: gene_search
+
+  macro_synteny_blocks:
+    build: macro_synteny_blocks
+
+  micro_synteny_search:
+    build: micro_synteny_search
+
+  pairwise_macro_synteny_blocks:
+    build: pairwise_macro_synteny_blocks
+
+  search:
+    build: search
+
+  redis_loader:
+    build: redis_loader
