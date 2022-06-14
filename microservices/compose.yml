@@ -2,12 +2,7 @@ services:
 
   reverse-proxy:
     image: traefik:v2.3
-    ports:
-      - "80:80"
-      - "8080:8080"
     command:
-      - "--log.level=DEBUG"
-      - "--api.insecure=true"
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
       - "--entrypoints.web.address=:80"
@@ -21,11 +16,9 @@ services:
     image: envoyproxy/envoy:v1.14.1
     volumes:
       - ./envoy/envoy.yaml:/etc/envoy/envoy.yaml
-    environment:
-      loglevel: debug
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.envoy.rule=Host(`localhost`) && PathPrefix(`/gcv/microservices/{service:(genes|chromosome|micro-synteny-search|macro-synteny-blocks|chromosome-region|search)}/grpc-web`)"
+      - "traefik.http.routers.envoy.rule=Host(`${DOMAIN}`) && PathPrefix(`/gcv/microservices/{service:(genes|chromosome|micro-synteny-search|macro-synteny-blocks|chromosome-region|search)}/grpc-web`)"
       - "traefik.http.services.envoy.loadbalancer.server.port=8080"
       - "traefik.http.routers.envoy.entrypoints=web"
 
@@ -42,7 +35,6 @@ services:
       - --save ''
 
   chromosome:
-    image: ghcr.io/legumeinfo/microservices-chromosome:1.0.0
     depends_on:
       redisearch:
         condition: service_healthy
@@ -57,13 +49,12 @@ services:
       - "81"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.chromosome.rule=Host(`localhost`) && Path(`/gcv/microservices/chromosome`)"
+      - "traefik.http.routers.chromosome.rule=Host(`${DOMAIN}`) && Path(`/gcv/microservices/chromosome`)"
       - "traefik.http.middlewares.chromosome-stripprefix.stripprefix.prefixes=/gcv/microservices/chromosome"
       - "traefik.http.routers.chromosome.middlewares=chromosome-stripprefix@docker"
       - "traefik.http.routers.chromosome.entrypoints=web"
 
   chromosome_search:
-    image: ghcr.io/legumeinfo/microservices-chromosome_search:1.0.0
     depends_on:
       redisearch:
         condition: service_healthy
@@ -77,7 +68,6 @@ services:
       - "81"
 
   chromosome_region:
-    image: ghcr.io/legumeinfo/microservices-chromosome_region:1.0.0
     depends_on:
       redisearch:
         condition: service_healthy
@@ -92,13 +82,12 @@ services:
       - "81"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.chromosome-region.rule=Host(`localhost`) && Path(`/gcv/microservices/chromosome-region`)"
+      - "traefik.http.routers.chromosome-region.rule=Host(`${DOMAIN}`) && Path(`/gcv/microservices/chromosome-region`)"
       - "traefik.http.middlewares.chromosome-region-stripprefix.stripprefix.prefixes=/gcv/microservices/chromosome-region"
       - "traefik.http.routers.chromosome-region.middlewares=chromosome-region-stripprefix@docker"
       - "traefik.http.routers.chromosome-region.entrypoints=web"
 
   genes:
-    image: ghcr.io/legumeinfo/microservices-genes:1.0.0
     depends_on:
       redisearch:
         condition: service_healthy
@@ -113,13 +102,12 @@ services:
       - "81"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.genes.rule=Host(`localhost`) && Path(`/gcv/microservices/genes`)"
+      - "traefik.http.routers.genes.rule=Host(`${DOMAIN}`) && Path(`/gcv/microservices/genes`)"
       - "traefik.http.middlewares.genes-stripprefix.stripprefix.prefixes=/gcv/microservices/genes"
       - "traefik.http.routers.genes.middlewares=genes-stripprefix@docker"
       - "traefik.http.routers.genes.entrypoints=web"
 
   gene_search:
-    image: ghcr.io/legumeinfo/microservices-gene_search:1.0.0
     depends_on:
       redisearch:
         condition: service_healthy
@@ -133,7 +121,6 @@ services:
       - "81"
 
   macro_synteny_blocks:
-    image: ghcr.io/legumeinfo/microservices-macro_synteny_blocks:1.1.0
     depends_on:
       redisearch:
         condition: service_healthy
@@ -151,13 +138,12 @@ services:
       - "81"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.macro-synteny-blocks.rule=Host(`localhost`) && Path(`/gcv/microservices/macro-synteny-blocks`)"
+      - "traefik.http.routers.macro-synteny-blocks.rule=Host(`${DOMAIN}`) && Path(`/gcv/microservices/macro-synteny-blocks`)"
       - "traefik.http.middlewares.macro-synteny-blocks-stripprefix.stripprefix.prefixes=/gcv/microservices/macro-synteny-blocks"
       - "traefik.http.routers.macro-synteny-blocks.middlewares=macro-synteny-blocks-stripprefix@docker"
       - "traefik.http.routers.macro-synteny-blocks.entrypoints=web"
 
   micro_synteny_search:
-    image: ghcr.io/legumeinfo/microservices-micro_synteny_search:1.0.0
     depends_on:
       redisearch:
         condition: service_healthy
@@ -172,13 +158,12 @@ services:
       - "81"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.micro-synteny-search.rule=Host(`localhost`) && Path(`/gcv/microservices/micro-synteny-search`)"
+      - "traefik.http.routers.micro-synteny-search.rule=Host(`${DOMAIN}`) && Path(`/gcv/microservices/micro-synteny-search`)"
       - "traefik.http.middlewares.micro-synteny-search-stripprefix.stripprefix.prefixes=/gcv/microservices/micro-synteny-search"
       - "traefik.http.routers.micro-synteny-search.middlewares=micro-synteny-search-stripprefix@docker"
       - "traefik.http.routers.micro-synteny-search.entrypoints=web"
 
   pairwise_macro_synteny_blocks:
-    image: ghcr.io/legumeinfo/microservices-pairwise_macro_synteny_blocks:1.1.0
     depends_on:
       redisearch:
         condition: service_healthy
@@ -192,7 +177,6 @@ services:
       - "81"
 
   search:
-    image: ghcr.io/legumeinfo/microservices-search:1.0.0
     depends_on:
       gene_search:
         condition: service_started
@@ -213,13 +197,12 @@ services:
       - "81"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.search.rule=Host(`localhost`) && Path(`/gcv/microservices/search`)"
+      - "traefik.http.routers.search.rule=Host(`${DOMAIN}`) && Path(`/gcv/microservices/search`)"
       - "traefik.http.middlewares.search-stripprefix.stripprefix.prefixes=/gcv/microservices/search"
       - "traefik.http.routers.search.middlewares=search-stripprefix@docker"
       - "traefik.http.routers.search.entrypoints=web"
 
   redis_loader:
-    image: ghcr.io/legumeinfo/microservices-redis_loader:1.0.0
     depends_on:
       redisearch:
         condition: service_healthy
