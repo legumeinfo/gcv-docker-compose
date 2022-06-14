@@ -1,0 +1,3 @@
+[submodule "gcv"]
+	path = gcv
+	url = https://github.com/legumeinfo/gcv
