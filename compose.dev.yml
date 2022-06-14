@@ -1,7 +1,7 @@
 services:
   gcv:
     build:
-      context: .
+      context: gcv
       target: dev
     ports:
       - "4200:4200"
