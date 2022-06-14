@@ -24,31 +24,31 @@ services:
       loglevel: debug
 
   chromosome:
-    build: chromosome
+    build: microservices/chromosome
 
   chromosome_search:
-    build: chromosome_search
+    build: microservices/chromosome_search
 
   chromosome_region:
-    build: chromosome_region
+    build: microservices/chromosome_region
 
   genes:
-    build: genes
+    build: microservices/genes
 
   gene_search:
-    build: gene_search
+    build: microservices/gene_search
 
   macro_synteny_blocks:
-    build: macro_synteny_blocks
+    build: microservices/macro_synteny_blocks
 
   micro_synteny_search:
-    build: micro_synteny_search
+    build: microservices/micro_synteny_search
 
   pairwise_macro_synteny_blocks:
-    build: pairwise_macro_synteny_blocks
+    build: microservices/pairwise_macro_synteny_blocks
 
   search:
-    build: search
+    build: microservices/search
 
   redis_loader:
-    build: redis_loader
+    build: microservices/redis_loader
