@@ -2,17 +2,15 @@ services:
   gcv:
     image: ghcr.io/legumeinfo/gcv:2.2.0
     ports:
-      - "4200:80"
+      - "${GCV_PORT:-80}:80"
     volumes:
       - ./config:/usr/share/nginx/html/config
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
     restart: always
 
   reverse-proxy:
-    ports:
-      - "${REV_PROXY_PORT}:80"
     command:
-      - "--log.level=ERROR"
+      - "--log.level=${TRAEFIK_LOG_LEVEL:-ERROR}"
       - "--api.insecure=false"
       - "--providers.docker.constraints=Label(`traefik.zone`, `${COMPOSE_PROJECT_NAME}`)"
     labels:

@@ -4,7 +4,7 @@ services:
       context: gcv
       target: dev
     ports:
-      - "4200:4200"
+      - "${GCV_PORT:-4200}:4200"
     volumes:
       - ./gcv:/gcv
       - /gcv/dep
@@ -13,10 +13,9 @@ services:
 
   reverse-proxy:
     ports:
-      - "80:80"
-      - "8080:8080"
+      - "${TRAEFIK_API_PORT:-8080}:8080"
     command:
-      - "--log.level=DEBUG"
+      - "--log.level=${TRAEFIK_LOG_LEVEL:-DEBUG}"
       - "--api.insecure=true"
 
   envoy:
