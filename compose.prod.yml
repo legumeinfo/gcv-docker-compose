@@ -3,9 +3,10 @@ services:
     image: ghcr.io/legumeinfo/gcv:2.2.0
     ports:
       - "${GCV_PORT:-80}:80"
+    environment:
+      - GCV_PATH=${GCV_PATH:-/gcv}
     volumes:
       - ./config:/usr/share/nginx/html/config
-      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
     restart: always
 
   reverse-proxy:
