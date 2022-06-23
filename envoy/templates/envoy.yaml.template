@@ -21,32 +21,32 @@ static_resources:
             - name: local_service
               domains: ["*"]
               routes:
-              - match: { prefix: "/gcv/microservices/genes/grpc-web/" }
+              - match: { prefix: "${MICROSERVICES_PATH}/genes/grpc-web/" }
                 route:
                   prefix_rewrite: "/"
                   cluster: genes_service
                   max_grpc_timeout: 0s
-              - match: { prefix: "/gcv/microservices/chromosome/grpc-web/" }
+              - match: { prefix: "${MICROSERVICES_PATH}/chromosome/grpc-web/" }
                 route:
                   prefix_rewrite: "/"
                   cluster: chromosome_service
                   max_grpc_timeout: 0s
-              - match: { prefix: "/gcv/microservices/micro-synteny-search/grpc-web/" }
+              - match: { prefix: "${MICROSERVICES_PATH}/micro-synteny-search/grpc-web/" }
                 route:
                   prefix_rewrite: "/"
                   cluster: micro_synteny_search_service
                   max_grpc_timeout: 0s
-              - match: { prefix: "/gcv/microservices/macro-synteny-blocks/grpc-web/" }
+              - match: { prefix: "${MICROSERVICES_PATH}/macro-synteny-blocks/grpc-web/" }
                 route:
                   prefix_rewrite: "/"
                   cluster: macro_synteny_blocks_service
                   max_grpc_timeout: 0s
-              - match: { prefix: "/gcv/microservices/chromosome-region/grpc-web/" }
+              - match: { prefix: "${MICROSERVICES_PATH}/chromosome-region/grpc-web/" }
                 route:
                   prefix_rewrite: "/"
                   cluster: chromosome_region_service
                   max_grpc_timeout: 0s
-              - match: { prefix: "/gcv/microservices/search/grpc-web/" }
+              - match: { prefix: "${MICROSERVICES_PATH}/search/grpc-web/" }
                 route:
                   prefix_rewrite: "/"
                   cluster: search_service

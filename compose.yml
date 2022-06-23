@@ -20,11 +20,17 @@ services:
 
   envoy:
     image: envoyproxy/envoy:v1.14.1
+    environment:
+      - MICROSERVICES_PATH=${MICROSERVICES_PATH:-/gcv/microservices}
     volumes:
-      - ./envoy/envoy.yaml:/etc/envoy/envoy.yaml
+      - ./envoy/templates/:/etc/envoy/templates/
+      - ./envoy/docker-entrypoint.d/:/docker-entrypoint.d/
+      - ./envoy/microservices-entrypoint.sh:/microservices-entrypoint.sh
+    entrypoint: /microservices-entrypoint.sh
+    command: ["envoy", "-c", "/etc/envoy/envoy.yaml"]
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.envoy.rule=Host(`${DOMAIN}`) && PathPrefix(`/gcv/microservices/{service:(genes|chromosome|micro-synteny-search|macro-synteny-blocks|chromosome-region|search)}/grpc-web`)"
+      - "traefik.http.routers.envoy.rule=Host(`${DOMAIN}`) && PathPrefix(`${MICROSERVICES_PATH:-/gcv/microservices}/{service:(genes|chromosome|micro-synteny-search|macro-synteny-blocks|chromosome-region|search)}/grpc-web`)"
       - "traefik.http.services.envoy.loadbalancer.server.port=8080"
       - "traefik.http.routers.envoy.entrypoints=web"
     profiles: [services, all]
@@ -57,8 +63,8 @@ services:
       - "81"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.chromosome.rule=Host(`${DOMAIN}`) && Path(`/gcv/microservices/chromosome`)"
-      - "traefik.http.middlewares.chromosome-stripprefix.stripprefix.prefixes=/gcv/microservices/chromosome"
+      - "traefik.http.routers.chromosome.rule=Host(`${DOMAIN}`) && Path(`${MICROSERVICES_PATH:-/gcv/microservices}/chromosome`)"
+      - "traefik.http.middlewares.chromosome-stripprefix.stripprefix.prefixes=${MICROSERVICES_PATH:-/gcv/microservices}/chromosome"
       - "traefik.http.routers.chromosome.middlewares=chromosome-stripprefix@docker"
       - "traefik.http.routers.chromosome.entrypoints=web"
     profiles: [services, all]
@@ -92,8 +98,8 @@ services:
       - "81"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.chromosome-region.rule=Host(`${DOMAIN}`) && Path(`/gcv/microservices/chromosome-region`)"
-      - "traefik.http.middlewares.chromosome-region-stripprefix.stripprefix.prefixes=/gcv/microservices/chromosome-region"
+      - "traefik.http.routers.chromosome-region.rule=Host(`${DOMAIN}`) && Path(`${MICROSERVICES_PATH:-/gcv/microservices}/chromosome-region`)"
+      - "traefik.http.middlewares.chromosome-region-stripprefix.stripprefix.prefixes=${MICROSERVICES_PATH:-/gcv/microservices}/chromosome-region"
       - "traefik.http.routers.chromosome-region.middlewares=chromosome-region-stripprefix@docker"
       - "traefik.http.routers.chromosome-region.entrypoints=web"
     profiles: [services, all]
@@ -113,8 +119,8 @@ services:
       - "81"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.genes.rule=Host(`${DOMAIN}`) && Path(`/gcv/microservices/genes`)"
-      - "traefik.http.middlewares.genes-stripprefix.stripprefix.prefixes=/gcv/microservices/genes"
+      - "traefik.http.routers.genes.rule=Host(`${DOMAIN}`) && Path(`${MICROSERVICES_PATH:-/gcv/microservices}/genes`)"
+      - "traefik.http.middlewares.genes-stripprefix.stripprefix.prefixes=${MICROSERVICES_PATH:-/gcv/microservices}/genes"
       - "traefik.http.routers.genes.middlewares=genes-stripprefix@docker"
       - "traefik.http.routers.genes.entrypoints=web"
     profiles: [services, all]
@@ -151,8 +157,8 @@ services:
       - "81"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.macro-synteny-blocks.rule=Host(`${DOMAIN}`) && Path(`/gcv/microservices/macro-synteny-blocks`)"
-      - "traefik.http.middlewares.macro-synteny-blocks-stripprefix.stripprefix.prefixes=/gcv/microservices/macro-synteny-blocks"
+      - "traefik.http.routers.macro-synteny-blocks.rule=Host(`${DOMAIN}`) && Path(`${MICROSERVICES_PATH:-/gcv/microservices}/macro-synteny-blocks`)"
+      - "traefik.http.middlewares.macro-synteny-blocks-stripprefix.stripprefix.prefixes=${MICROSERVICES_PATH:-/gcv/microservices}/macro-synteny-blocks"
       - "traefik.http.routers.macro-synteny-blocks.middlewares=macro-synteny-blocks-stripprefix@docker"
       - "traefik.http.routers.macro-synteny-blocks.entrypoints=web"
     profiles: [services, all]
@@ -172,8 +178,8 @@ services:
       - "81"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.micro-synteny-search.rule=Host(`${DOMAIN}`) && Path(`/gcv/microservices/micro-synteny-search`)"
-      - "traefik.http.middlewares.micro-synteny-search-stripprefix.stripprefix.prefixes=/gcv/microservices/micro-synteny-search"
+      - "traefik.http.routers.micro-synteny-search.rule=Host(`${DOMAIN}`) && Path(`${MICROSERVICES_PATH:-/gcv/microservices}/micro-synteny-search`)"
+      - "traefik.http.middlewares.micro-synteny-search-stripprefix.stripprefix.prefixes=${MICROSERVICES_PATH:-/gcv/microservices}/micro-synteny-search"
       - "traefik.http.routers.micro-synteny-search.middlewares=micro-synteny-search-stripprefix@docker"
       - "traefik.http.routers.micro-synteny-search.entrypoints=web"
     profiles: [services, all]
@@ -213,8 +219,8 @@ services:
       - "81"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.search.rule=Host(`${DOMAIN}`) && Path(`/gcv/microservices/search`)"
-      - "traefik.http.middlewares.search-stripprefix.stripprefix.prefixes=/gcv/microservices/search"
+      - "traefik.http.routers.search.rule=Host(`${DOMAIN}`) && Path(`${MICROSERVICES_PATH:-/gcv/microservices}/search`)"
+      - "traefik.http.middlewares.search-stripprefix.stripprefix.prefixes=${MICROSERVICES_PATH:-/gcv/microservices}/search"
       - "traefik.http.routers.search.middlewares=search-stripprefix@docker"
       - "traefik.http.routers.search.entrypoints=web"
     profiles: [services, all]
