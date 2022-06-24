@@ -14,9 +14,9 @@ services:
   reverse-proxy:
     ports:
       - "${TRAEFIK_API_PORT:-8080}:8080"
-    command:
-      - "--log.level=${TRAEFIK_LOG_LEVEL:-DEBUG}"
-      - "--api.insecure=true"
+    environment:
+      - TRAEFIK_LOG_LEVEL=${TRAEFIK_LOG_LEVEL:-DEBUG}
+      - TRAEFIK_API_INSECURE=true
 
   envoy:
     environment:

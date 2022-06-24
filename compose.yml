@@ -7,11 +7,11 @@ services:
     image: traefik:v2.3
     ports:
       - "${TRAEFIK_PORT:-80}:80"
-    command:
-      - "--providers.docker=true"
-      - "--providers.docker.exposedbydefault=false"
-      - "--entrypoints.web.address=:80"
-      - "--entrypoints.grpc.address=:81"
+    environment:
+      - TRAEFIK_PROVIDERS_DOCKER=true
+      - TRAEFIK_PROVIDERS_DOCKER_EXPOSEDBYDEFAULT=false
+      - TRAEFIK_ENTRYPOINTS_WEB_ADDRESS=:80
+      - TRAEFIK_ENTRYPOINTS_GRPC_ADDRESS=:81
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     labels:
