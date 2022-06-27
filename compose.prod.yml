@@ -11,9 +11,9 @@ services:
 
   reverse-proxy:
     environment:
-      - TRAEFIK_LOG_LEVEL=${TRAEFIK_LOG_LEVEL:-DEBUG}
+      - TRAEFIK_LOG_LEVEL=${TRAEFIK_LOG_LEVEL:-ERROR}
       - TRAEFIK_API_INSECURE=false
-      - TRAEFIK_PROVIDERS_DOCKER_CONSTRAINTS="Label(`traefik.zone`, `${COMPOSE_PROJECT_NAME}`)"
+      - TRAEFIK_PROVIDERS_DOCKER_CONSTRAINTS=Label(`traefik.zone`,`${COMPOSE_PROJECT_NAME}`)
     labels:
       - "traefik.zone=${COMPOSE_PROJECT_NAME}"
 
