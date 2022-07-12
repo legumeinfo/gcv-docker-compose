@@ -62,9 +62,9 @@ This should be used if you want to deploy an instance of the GCV web app that lo
 ### `redis_loader`
 The microservices load data from a Redis database, which is defined as a service in the Compose files.
 The Compose files also define a `redis_loader` service that provides a command-line program for loading data into Redis from a Chado database and/or GFF files.
-This is the only service that can be run with just the `compose.yml` file:
+
 ```console
-docker compose -f compose.yml run redis_loader ...
+docker compose -f compose.yml -f compose.prod.yml run redis_loader ...
 ```
 See the [`redis_loader` documentation](https://github.com/legumeinfo/microservices/tree/main/redis_loader) for details on how to load data in to the microservices' Redis database.
 
