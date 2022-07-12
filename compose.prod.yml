@@ -1,6 +1,6 @@
 services:
   gcv:
-    image: ghcr.io/legumeinfo/gcv:2.2.0
+    image: ghcr.io/legumeinfo/gcv:2.3.0
     ports:
       - "${GCV_PORT:-80}:80"
     environment:
@@ -45,7 +45,7 @@ services:
     image: ghcr.io/legumeinfo/microservices-gene_search:1.0.0
 
   macro_synteny_blocks:
-    image: ghcr.io/legumeinfo/microservices-macro_synteny_blocks:1.1.0
+    image: ghcr.io/legumeinfo/microservices-macro_synteny_blocks:1.2.0
     labels:
       - "traefik.zone=${COMPOSE_PROJECT_NAME}"
 
@@ -55,7 +55,7 @@ services:
       - "traefik.zone=${COMPOSE_PROJECT_NAME}"
 
   pairwise_macro_synteny_blocks:
-    image: ghcr.io/legumeinfo/microservices-pairwise_macro_synteny_blocks:1.1.0
+    image: ghcr.io/legumeinfo/microservices-pairwise_macro_synteny_blocks:1.2.0
 
   search:
     image: ghcr.io/legumeinfo/microservices-search:1.0.0
@@ -63,4 +63,4 @@ services:
       - "traefik.zone=${COMPOSE_PROJECT_NAME}"
 
   redis_loader:
-    image: ghcr.io/legumeinfo/microservices-redis_loader:1.0.0
+    image: ghcr.io/legumeinfo/microservices-redis_loader:1.1.0
