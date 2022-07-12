@@ -46,7 +46,7 @@ services:
     command:
       - --loadmodule /usr/lib/redis/modules/redisearch.so
       - --save ''
-    profiles: [services, all]
+    profiles: [redis_loader, services, all]
 
   chromosome:
     depends_on:
