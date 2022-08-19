@@ -51,3 +51,16 @@ services:
 
   redis_loader:
     build: microservices/redis_loader
+    volumes:
+      - ./data/test/:/data
+
+  chado:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: gcv
+    ports:
+      - 5432:5432
+    volumes:
+    - ./data/postgresql:/var/lib/postgresql/data
+    - ./data/chado_dumps:/dumps
+    profiles: [chado]
