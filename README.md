@@ -104,6 +104,11 @@ This sets what port the Traefik API is served at.
 The Traefik API is disabled in the production `compose.prod.yml` file for security purposes.
 See the [Traefik documentation](https://doc.traefik.io/traefik/operations/api/) for details.
 
+### `REDIS_START_PERIOD` (default: `90s`)
+This sets how long Docker Compose will wait for Redis to start before the service's [healthcheck](https://docs.docker.com/compose/compose-file/#healthcheck) is allowed to fail.
+This value will need to be increased when loading a relatively large Redis `.rdb` database file.
+See the [Docker Compose documentation](https://docs.docker.com/compose/compose-file/#specifying-durations) for valid values.
+
 
 ## Other Files and Directories
 

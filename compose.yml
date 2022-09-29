@@ -39,6 +39,7 @@ services:
     image: redislabs/redisearch:2.4.14
     healthcheck:
       test: "redis-cli ping | grep -q PONG"
+      start_period: ${REDIS_START_PERIOD:-90s}
     expose:
       - "6379"
     volumes:
