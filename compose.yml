@@ -4,7 +4,7 @@ services:
     profiles: [gcv, all]
 
   reverse-proxy:
-    image: traefik:v2.8
+    image: traefik:v2.9
     ports:
       - "${TRAEFIK_PORT:-80}:80"
     environment:
@@ -19,7 +19,7 @@ services:
     profiles: [services, all]
 
   envoy:
-    image: envoyproxy/envoy:v1.23.1
+    image: envoyproxy/envoy:v1.24-latest
     environment:
       - MICROSERVICES_PATH=${MICROSERVICES_PATH:-/gcv/microservices}
     volumes:
@@ -36,7 +36,7 @@ services:
     profiles: [services, all]
 
   redisearch:
-    image: redislabs/redisearch:2.4.14
+    image: redislabs/redisearch:2.4.15
     healthcheck:
       test: "redis-cli ping | grep -q PONG"
       start_period: ${REDIS_START_PERIOD:-90s}
