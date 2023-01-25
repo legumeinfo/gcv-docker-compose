@@ -19,7 +19,7 @@ services:
     profiles: [services, all]
 
   envoy:
-    image: envoyproxy/envoy:v1.24-latest
+    image: envoyproxy/envoy:v1.25-latest
     environment:
       - MICROSERVICES_PATH=${MICROSERVICES_PATH:-/gcv/microservices}
     volumes:
