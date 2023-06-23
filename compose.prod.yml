@@ -1,6 +1,6 @@
 services:
   gcv:
-    image: ghcr.io/legumeinfo/gcv:2.5.0
+    image: ghcr.io/legumeinfo/gcv:2.6.0
     ports:
       - "${GCV_PORT:-80}:80"
     environment:
