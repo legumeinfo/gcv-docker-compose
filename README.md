@@ -66,8 +66,15 @@ Although the `redis_loader` profile is used to ensure the Redis service is runni
 ```console
 docker compose -f compose.yml -f compose.prod.yml run redis_loader ...
 ```
-See the [`redis_loader` documentation](https://github.com/legumeinfo/microservices/tree/main/redis_loader) for details on how to load data in to the microservices' Redis database.
-
+See the [`redis_loader` documentation](https://github.com/legumeinfo/microservices/tree/main/redis_loader) for details on how to load data in to the microservices' Redis database. We have provided example data that can be loaded for testing purposes as:
+```
+docker compose -f compose.yml -f compose.prod.yml --profile redis_loader run redis_loader --load-type reload gff --genus Glycine --species max --strain Wm82 --gene-gff https://github.com/legumeinfo/microservices/raw/main/tests/data/genes.gff3.gz  --chromosome-gff https://github.com/legumeinfo/microservices/raw/main/tests/data/genome.gff3.gz --gfa https://github.com/legumeinfo/microservices/raw/main/tests/data/gfa.tsv.gz
+```
+After running the redis_loader command above, you should be able to start the GCV services as:
+```
+docker compose -f compose.yml -f compose.prod.yml --profile all up -d
+```
+then open a browser to http://localhost:4200 (assuming you are running it locally!) and search for gene Glyma.15G255600.
 
 ## Environment Variables
 The services defined in the Compose files can be configured via the following environment variables.
