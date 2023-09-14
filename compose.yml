@@ -231,4 +231,6 @@ services:
         condition: service_healthy
     environment:
       REDIS_HOST: redis
+    volumes:
+      - ./data/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d:rw
     profiles: [redis_loader]
