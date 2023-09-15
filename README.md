@@ -83,7 +83,7 @@ The `redis_loader` service supports two modes of loading data: command-line and 
 In command-line mode, arguments are passed directly to the `redis_loader` service.
 For example:
 ```console
-docker compose -f compose.yml -f compose.prod.yml run redis_loader --load_type reload \
+docker compose -f compose.yml -f compose.prod.yml run redis_loader \
     gff \
         --genus Glycine \
         --species max \
@@ -108,7 +108,7 @@ The `redis_loader` service is actually a Python module.
 The scripts in the `redis_loader` container's `/docker-entrypoint-initdb.d/` directory can run this python module directly.
 For example, the `data/docker-entrypoint-initdb.d/example.sh` script used in the [Quick Start](#quick-start) runs the example from the [Command-line](#command-line) section:
 ```console
-python -u -m redis_loader --load_type reload \
+python -u -m redis_loader \
     gff \
         --genus Glycine \
         --species max \

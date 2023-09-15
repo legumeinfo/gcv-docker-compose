@@ -2,7 +2,8 @@
 
 set -o errexit -o pipefail
 
-python -u -m redis_loader --load_type reload \
+# NOTE: --load-type isn't necessary because this script will only run if the Redis database is empty
+python -u -m redis_loader \
     gff \
        --genus Glycine \
        --species max \
