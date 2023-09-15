@@ -108,7 +108,7 @@ The `redis_loader` service is actually a Python module.
 The scripts in the `redis_loader` container's `/docker-entrypoint-initdb.d/` directory can run this python module directly.
 For example, the `data/docker-entrypoint-initdb.d/example.sh` script used in the [Quick Start](#quick-start) runs the example from the [Command-line](#command-line) section:
 ```console
-python -u -m redis_loader \
+python -u -m redis_loader --load_type reload \
     gff \
         --genus Glycine \
         --species max \
