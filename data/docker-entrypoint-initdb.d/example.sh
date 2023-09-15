@@ -2,7 +2,7 @@
 
 set -o errexit -o pipefail
 
-python -u -m redis_loader 
+python -u -m redis_loader --load_type reload \
     gff \
        --genus Glycine \
        --species max \
