@@ -83,7 +83,7 @@ The `redis_loader` service supports two modes of loading data: command-line and 
 In command-line mode, arguments are passed directly to the `redis_loader` service.
 For example:
 ```console
-docker compose -f compose.yml -f compose.prod.yml run redis_loader \
+docker compose -f compose.yml -f compose.prod.yml run redis_loader --load_type reload \
     gff \
         --genus Glycine \
         --species max \
