@@ -99,7 +99,7 @@ If paths to local files are to be used instead, then a directory containing the 
 When the `redis_loader` service starts, it checks the `/docker-entrypoint-initdb.d/` directory inside the container for `.sh` scripts.
 **If the Redis database is empty**, these scripts will be automatically executed in alphabetical order.
 For convenience, the compose files mount the `data/docker-entrypoint-initdb.d/` directory as the `/docker-entrypoint-initdb.d/` directory inside the container.
-This means if there are scripts in the `data/docker-entrypoint-initdb.d/` directory, then the `redis_loader` service can be run without any command-line arguments and the scripts will automatically be executed:
+This means if there are scripts in the `data/docker-entrypoint-initdb.d/` directory on the host then the `redis_loader` service can be run without any command-line arguments and the scripts will automatically be executed:
 ```console
 docker-compose -f compose.yml -f compose.prod.yml run redis_loader
 ```
@@ -124,7 +124,7 @@ For details about the `redis_loader` command-line options, use the `--help` flag
 ```console
 docker-compose -f compose.yml -f compose.prod.yml run redis_loader --help
 ```
-More thorough documentation is available in the `redis_loader`[microservice documentation](https://github.com/legumeinfo/microservices/tree/main/redis_loader).
+More thorough documentation is available in the `redis_loader` [microservice documentation](https://github.com/legumeinfo/microservices/tree/main/redis_loader).
 This includes instructions on how to use the `redis_loader` to load data from a [Chado](http://gmod.org/wiki/Chado_-_Getting_Started) database.
 
 
