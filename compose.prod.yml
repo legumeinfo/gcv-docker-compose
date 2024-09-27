@@ -49,6 +49,11 @@ services:
     labels:
       - "traefik.zone=${COMPOSE_PROJECT_NAME}"
 
+  macro_synteny_paf:
+    image: ghcr.io/legumeinfo/microservices-macro_synteny_paf:1.3.3
+    labels:
+      - "traefik.zone=${COMPOSE_PROJECT_NAME}"
+
   micro_synteny_search:
     image: ghcr.io/legumeinfo/microservices-micro_synteny_search:1.1.3
     labels:

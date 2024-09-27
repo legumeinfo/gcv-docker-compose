@@ -41,6 +41,11 @@ static_resources:
                           prefix_rewrite: "/"
                           cluster: macro_synteny_blocks_service
                           timeout: 0s
+                      - match: { prefix: "${MICROSERVICES_PATH}/macro-synteny-paf/grpc-web/" }
+                        route:
+                          prefix_rewrite: "/"
+                          cluster: macro_synteny_paf_service
+                          timeout: 0s
                       - match: { prefix: "${MICROSERVICES_PATH}/chromosome-region/grpc-web/" }
                         route:
                           prefix_rewrite: "/"
@@ -124,6 +129,20 @@ static_resources:
                 address:
                   socket_address:
                     address: macro_synteny_blocks
+                    port_value: 81
+    - name: macro_synteny_paf_service
+      connect_timeout: 0.25s
+      type: logical_dns
+      http2_protocol_options: {}
+      lb_policy: round_robin
+      load_assignment:
+        cluster_name: cluster_0
+        endpoints:
+          - lb_endpoints:
+            - endpoint:
+                address:
+                  socket_address:
+                    address: macro_synteny_paf
                     port_value: 81
     - name: chromosome_region_service
       connect_timeout: 0.25s

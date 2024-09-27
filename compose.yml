@@ -30,7 +30,7 @@ services:
     command: ["envoy", "-c", "/etc/envoy/envoy.yaml"]
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.envoy.rule=Host(`${DOMAIN}`) && PathPrefix(`${MICROSERVICES_PATH:-/gcv/microservices}/{service:(genes|chromosome|micro-synteny-search|macro-synteny-blocks|chromosome-region|search)}/grpc-web`)"
+      - "traefik.http.routers.envoy.rule=Host(`${DOMAIN}`) && PathPrefix(`${MICROSERVICES_PATH:-/gcv/microservices}/{service:(genes|chromosome|micro-synteny-search|macro-synteny-blocks|macro-synteny-paf|chromosome-region|search)}/grpc-web`)"
       - "traefik.http.services.envoy.loadbalancer.server.port=8080"
       - "traefik.http.routers.envoy.entrypoints=web"
     profiles: [services, all]
@@ -161,6 +161,36 @@ services:
       - "traefik.http.middlewares.macro-synteny-blocks-stripprefix.stripprefix.prefixes=${MICROSERVICES_PATH:-/gcv/microservices}/macro-synteny-blocks"
       - "traefik.http.routers.macro-synteny-blocks.middlewares=macro-synteny-blocks-stripprefix@docker"
       - "traefik.http.routers.macro-synteny-blocks.entrypoints=web"
+    profiles: [services, all]
+
+  macro_synteny_paf:
+    depends_on:
+      redis:
+        condition: service_healthy
+      genes:
+        condition: service_started
+      chromosome:
+        condition: service_started
+      macro_synteny_blocks:
+        condition: service_started
+    environment:
+      REDIS_HOST: redis
+      HTTP_HOST: "0.0.0.0"
+      HTTP_PORT: "80"
+      GRPC_HOST: "0.0.0.0"
+      GRPC_PORT: "81"
+      CHROMOSOME_ADDR: chromosome:81
+      GENES_ADDR: genes:81
+      MACRO_SYNTENY_BLOCKS_ADDR: macro_synteny_blocks:81
+    expose:
+      - "80"
+      - "81"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.macro-synteny-paf.rule=Host(`${DOMAIN}`) && Path(`${MICROSERVICES_PATH:-/gcv/microservices}/macro-synteny-paf`)"
+      - "traefik.http.middlewares.macro-synteny-paf-stripprefix.stripprefix.prefixes=${MICROSERVICES_PATH:-/gcv/microservices}/macro-synteny-paf"
+      - "traefik.http.routers.macro-synteny-paf.middlewares=macro-synteny-paf-stripprefix@docker"
+      - "traefik.http.routers.macro-synteny-paf.entrypoints=web"
     profiles: [services, all]
 
   micro_synteny_search:

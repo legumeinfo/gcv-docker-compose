@@ -52,6 +52,11 @@ services:
     environment:
       - LOG_LEVEL=DEBUG
 
+  macro_synteny_paf:
+    build: microservices/macro_synteny_paf
+    environment:
+      - LOG_LEVEL=DEBUG
+
   micro_synteny_search:
     build: microservices/micro_synteny_search
     environment:
