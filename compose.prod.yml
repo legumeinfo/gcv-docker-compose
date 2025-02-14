@@ -16,51 +16,62 @@ services:
       - TRAEFIK_PROVIDERS_DOCKER_CONSTRAINTS=Label(`traefik.zone`,`${COMPOSE_PROJECT_NAME}`)
     labels:
       - "traefik.zone=${COMPOSE_PROJECT_NAME}"
+    restart: always
 
   envoy:
     environment:
       loglevel: error
     labels:
       - "traefik.zone=${COMPOSE_PROJECT_NAME}"
+    restart: always
 
   chromosome:
     image: ghcr.io/legumeinfo/microservices-chromosome:1.1.3
     labels:
       - "traefik.zone=${COMPOSE_PROJECT_NAME}"
+    restart: always
 
   chromosome_search:
     image: ghcr.io/legumeinfo/microservices-chromosome_search:1.1.3
+    restart: always
 
   chromosome_region:
     image: ghcr.io/legumeinfo/microservices-chromosome_region:1.1.3
     labels:
       - "traefik.zone=${COMPOSE_PROJECT_NAME}"
+    restart: always
 
   genes:
     image: ghcr.io/legumeinfo/microservices-genes:1.1.3
     labels:
       - "traefik.zone=${COMPOSE_PROJECT_NAME}"
+    restart: always
 
   gene_search:
     image: ghcr.io/legumeinfo/microservices-gene_search:1.1.3
+    restart: always
 
   macro_synteny_blocks:
     image: ghcr.io/legumeinfo/microservices-macro_synteny_blocks:1.3.3
     labels:
       - "traefik.zone=${COMPOSE_PROJECT_NAME}"
+    restart: always
 
   micro_synteny_search:
     image: ghcr.io/legumeinfo/microservices-micro_synteny_search:1.1.3
     labels:
       - "traefik.zone=${COMPOSE_PROJECT_NAME}"
+    restart: always
 
   pairwise_macro_synteny_blocks:
     image: ghcr.io/legumeinfo/microservices-pairwise_macro_synteny_blocks:1.3.3
+    restart: always
 
   search:
     image: ghcr.io/legumeinfo/microservices-search:1.1.3
     labels:
       - "traefik.zone=${COMPOSE_PROJECT_NAME}"
+    restart: always
 
   redis_loader:
     image: ghcr.io/legumeinfo/microservices-redis_loader:1.3.0
