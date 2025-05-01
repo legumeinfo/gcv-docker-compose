@@ -52,7 +52,7 @@ services:
     restart: always
 
   macro_synteny_blocks:
-    image: ghcr.io/legumeinfo/microservices-macro_synteny_blocks:1.3.3
+    image: ghcr.io/legumeinfo/microservices-macro_synteny_blocks:1.3.4
     labels:
       - "traefik.zone=${COMPOSE_PROJECT_NAME}"
     restart: always
