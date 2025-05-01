@@ -48,7 +48,7 @@ services:
     restart: always
 
   gene_search:
-    image: ghcr.io/legumeinfo/microservices-gene_search:1.1.3
+    image: ghcr.io/legumeinfo/microservices-gene_search:1.1.4
     restart: always
 
   macro_synteny_blocks:
