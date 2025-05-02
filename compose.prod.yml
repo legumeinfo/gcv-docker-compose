@@ -68,7 +68,7 @@ services:
     restart: always
 
   search:
-    image: ghcr.io/legumeinfo/microservices-search:1.1.3
+    image: ghcr.io/legumeinfo/microservices-search:1.1.4
     labels:
       - "traefik.zone=${COMPOSE_PROJECT_NAME}"
     restart: always
