@@ -58,7 +58,7 @@ services:
     restart: always
 
   micro_synteny_search:
-    image: ghcr.io/legumeinfo/microservices-micro_synteny_search:1.1.3
+    image: ghcr.io/legumeinfo/microservices-micro_synteny_search:1.1.4
     labels:
       - "traefik.zone=${COMPOSE_PROJECT_NAME}"
     restart: always
