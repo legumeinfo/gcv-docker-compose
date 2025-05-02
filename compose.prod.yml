@@ -74,4 +74,4 @@ services:
     restart: always
 
   redis_loader:
-    image: ghcr.io/legumeinfo/microservices-redis_loader:1.3.0
+    image: ghcr.io/legumeinfo/microservices-redis_loader:1.3.1
