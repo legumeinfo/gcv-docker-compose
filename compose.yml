@@ -13,7 +13,8 @@ services:
       - TRAEFIK_ENTRYPOINTS_WEB_ADDRESS=:80
       - TRAEFIK_ENTRYPOINTS_GRPC_ADDRESS=:81
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
+#      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /var/run/user/1000/docker.sock:/var/run/docker.sock:ro
     labels:
       - "traefik.enable=true"
     profiles: [services, all]
@@ -146,6 +147,10 @@ services:
         condition: service_healthy
       pairwise_macro_synteny_blocks:
         condition: service_started
+      chromosome:
+        condition: service_started
+      genes:
+        condition: service_started
     environment:
       REDIS_HOST: redis
       HTTP_HOST: "0.0.0.0"
@@ -153,6 +158,8 @@ services:
       GRPC_HOST: "0.0.0.0"
       GRPC_PORT: "81"
       PAIRWISE_ADDR: pairwise_macro_synteny_blocks:81
+      CHROMOSOME_ADDR: chromosome:81
+      GENES_ADDR: genes:81
     expose:
       - "80"
       - "81"
@@ -183,6 +190,9 @@ services:
       CHROMOSOME_ADDR: chromosome:81
       GENES_ADDR: genes:81
       MACRO_SYNTENY_BLOCKS_ADDR: macro_synteny_blocks:81
+      PAF_CACHE_ENABLED: "${PAF_CACHE_ENABLED:-true}"
+      PAF_CACHE_TTL: "${PAF_CACHE_TTL:-86400}"
+      PAF_COMPRESSION_THRESHOLD: "${PAF_COMPRESSION_THRESHOLD:-102400}"
     expose:
       - "80"
       - "81"
