@@ -192,7 +192,6 @@ services:
       MACRO_SYNTENY_BLOCKS_ADDR: macro_synteny_blocks:81
       PAF_CACHE_ENABLED: "${PAF_CACHE_ENABLED:-true}"
       PAF_CACHE_TTL: "${PAF_CACHE_TTL:-86400}"
-      PAF_COMPRESSION_THRESHOLD: "${PAF_COMPRESSION_THRESHOLD:-102400}"
     expose:
       - "80"
       - "81"
