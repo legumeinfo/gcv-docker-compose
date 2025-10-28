@@ -2,5 +2,6 @@
 	path = gcv
 	url = https://github.com/legumeinfo/gcv
 [submodule "microservices"]
+        branch = macro-synteny-paf
 	path = microservices
 	url = https://github.com/legumeinfo/microservices
