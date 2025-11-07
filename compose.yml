@@ -48,6 +48,7 @@ services:
       - ./data/redis:/data:rw
     environment:
       REDIS_ARGS: "--save ''"
+      REDISEARCH_ARGS: "MAXSEARCHRESULTS 100000"
     profiles: [redis_loader, services, all]
 
   chromosome:
