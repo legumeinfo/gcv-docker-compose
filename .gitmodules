@@ -1,6 +1,7 @@
 [submodule "gcv"]
 	path = gcv
 	url = https://github.com/legumeinfo/gcv
+	branch = add-playwright-testing
 [submodule "microservices"]
         branch = macro-synteny-paf
 	path = microservices
