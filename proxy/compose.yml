@@ -1,0 +1,30 @@
+# The shared proxy for several GCV instances on one host. It routes each instance's
+# MICROSERVICES_PATH to that instance's own reverse-proxy, found by the labels
+# compose.shared.yml gives it, so starting an instance is enough to route it.
+#
+# Start it once, before any instance: ./gcvctl proxy
+
+name: gcv-proxy
+
+services:
+  proxy:
+    image: traefik:v3.3
+    command:
+      - --entrypoints.web.address=:80
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --providers.docker.network=${GCV_NETWORK:-gcv}
+      # Only the instances' reverse-proxies, never the services behind them.
+      - --providers.docker.constraints=Label(`gcv.proxy`,`shared`)
+      - --log.level=${TRAEFIK_LOG_LEVEL:-ERROR}
+    ports:
+      - "${PROXY_PORT:-80}:80"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - gcv
+    restart: always
+
+networks:
+  gcv:
+    name: ${GCV_NETWORK:-gcv}

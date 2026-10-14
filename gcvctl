@@ -1,0 +1,68 @@
+#!/bin/sh
+# Runs several GCV instances from this one checkout. Each instance is a Compose project
+# named for, and configured by, instances/<name>.env, behind the shared proxy in proxy/.
+#
+#   ./gcvctl proxy                   start the shared proxy
+#   ./gcvctl up <name>...            start instances, fetching each one's RDB_URL if set
+#   ./gcvctl down <name>...          stop instances
+#   ./gcvctl load <name>...          load instances' databases with redis_loader
+#   ./gcvctl ls                      list the instances
+#   ./gcvctl compose <name> <args>   run any docker compose command for one instance
+#
+# An instance's database and load scripts are in data/<name>/ unless its env file sets
+# REDIS_DATA_DIR or INITDB_DIR.
+
+set -eu
+cd "$(dirname "$0")"
+
+usage() {
+  sed -n '2,13s/^# \{0,1\}//p' "$0" >&2
+  exit 2
+}
+
+instance_compose() (
+  name=$1
+  shift
+  env=instances/$name.env
+  if [ ! -f "$env" ]; then
+    echo "gcvctl: no instance $name ($env is missing)" >&2
+    exit 1
+  fi
+  grep -q '^REDIS_DATA_DIR=' "$env" || export REDIS_DATA_DIR="./data/$name/redis"
+  grep -q '^INITDB_DIR=' "$env" ||
+    export INITDB_DIR="./data/$name/docker-entrypoint-initdb.d"
+  docker compose --project-name "$name" --env-file "$env" \
+    -f compose.yml -f compose.prod.yml -f compose.shared.yml "$@"
+)
+
+each() {
+  action=$1
+  shift
+  [ $# -gt 0 ] || usage
+  for name; do
+    echo "== $name"
+    case $action in
+      up) instance_compose "$name" up -d ;;
+      down) instance_compose "$name" down ;;
+      load) instance_compose "$name" run --rm redis_loader ;;
+    esac
+  done
+}
+
+[ $# -gt 0 ] || usage
+command=$1
+shift
+case $command in
+  proxy) docker compose -f proxy/compose.yml up -d ;;
+  up | down | load) each "$command" "$@" ;;
+  ls)
+    for env in instances/*.env; do
+      if [ -f "$env" ]; then basename "$env" .env; fi
+    done
+    ;;
+  compose)
+    [ $# -gt 1 ] || usage
+    instance_compose "$@"
+    ;;
+  *) usage ;;
+esac

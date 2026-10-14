@@ -6,7 +6,7 @@ services:
     environment:
       - GCV_PATH=${GCV_PATH:-/gcv}
     volumes:
-      - ./config:/usr/share/nginx/html/config
+      - ${GCV_CONFIG_DIR:-./config}:/usr/share/nginx/html/config
     restart: always
 
   reverse-proxy:
