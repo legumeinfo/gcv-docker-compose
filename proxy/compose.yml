@@ -8,7 +8,7 @@ name: gcv-proxy
 
 services:
   proxy:
-    image: traefik:v3.3
+    image: traefik:v3.7
     command:
       - --entrypoints.web.address=:80
       - --providers.docker=true
