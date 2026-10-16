@@ -20,7 +20,7 @@ services:
     ports:
       - "${PROXY_PORT:-80}:80"
     volumes:
-      - ${DOCKER_SOCKET:-/var/run/docker.sock}:/var/run/docker.sock:ro
+      - ${DOCKER_SOCKET:-${XDG_RUNTIME_DIR:?set XDG_RUNTIME_DIR, or DOCKER_SOCKET to the Docker socket}/docker.sock}:/var/run/docker.sock:ro
     networks:
       - gcv
     restart: always

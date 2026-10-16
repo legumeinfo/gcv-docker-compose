@@ -13,7 +13,7 @@ services:
       - TRAEFIK_ENTRYPOINTS_WEB_ADDRESS=:80
       - TRAEFIK_ENTRYPOINTS_GRPC_ADDRESS=:81
     volumes:
-      - ${DOCKER_SOCKET:-/var/run/docker.sock}:/var/run/docker.sock:ro
+      - ${DOCKER_SOCKET:-${XDG_RUNTIME_DIR:?set XDG_RUNTIME_DIR, or DOCKER_SOCKET to the Docker socket}/docker.sock}:/var/run/docker.sock:ro
     labels:
       - "traefik.enable=true"
     profiles: [services, all]
