@@ -140,7 +140,7 @@ The `gcvctl` script runs them:
 
 Each instance is configured by `instances/<name>.env`; copy `instances/example.env.sample` to start one.
 Its `MICROSERVICES_PATH` must be unique: the shared proxy routes everything under it to that instance's own reverse proxy, which it finds by the labels `compose.shared.yml` gives it.
-With `COMPOSE_PROFILES=all`, the instance's GCV web app is routed everything under its `GCV_PATH`, which must be unique too, and reads the `config.json` in its `GCV_CONFIG_DIR`.
+With `COMPOSE_PROFILES=all`, the instance's GCV web app is routed everything under its `GCV_PATH`, which must be unique too, and reads its `GCV_CONFIG`.
 Starting an instance is therefore all it takes to route it; no proxy configuration needs editing.
 An instance's database is stored in `data/<name>/redis/`.
 
@@ -206,8 +206,8 @@ The host directory of scripts the `redis_loader` service runs when the database 
 A prebuilt database to download into `REDIS_DATA_DIR` before Redis starts, and its SHA-256 digest.
 The download is skipped when the database in place came from the same URL and matches the digest, and a download that doesn't match is refused, leaving the database in place.
 
-### `GCV_CONFIG_DIR` (default: `./config`)
-The host directory mounted as the GCV web app's `config/`, holding its `config.json`; give each instance with the web app its own, listing its servers.
+### `GCV_CONFIG` (default: `./config/config.json`)
+The GCV web app's `config.json`, mounted over the one in its image, whose `config/img/` it refers to; give each instance with the web app its own, listing its servers.
 
 ### `PROXY_PORT` (default: `80`) and `GCV_NETWORK` (default: `gcv`)
 The host port of the shared proxy in `proxy/`, and the Docker network joining it to each instance's reverse proxy.

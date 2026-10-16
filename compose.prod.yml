@@ -6,7 +6,8 @@ services:
     environment:
       - GCV_PATH=${GCV_PATH:-/gcv}
     volumes:
-      - ${GCV_CONFIG_DIR:-./config}:/usr/share/nginx/html/config
+      # Over the image's own config/, whose img/ the config refers to.
+      - ${GCV_CONFIG:-./config/config.json}:/usr/share/nginx/html/config/config.json:ro
     restart: always
 
   reverse-proxy:
