@@ -144,6 +144,12 @@ With `COMPOSE_PROFILES=all`, the instance's GCV web app is routed everything und
 Starting an instance is therefore all it takes to route it; no proxy configuration needs editing.
 An instance's database is stored in `data/<name>/redis/`.
 
+With [rootless Docker](https://docs.docker.com/engine/security/rootless/), point the reverse proxies at your daemon's socket and give the shared proxy an unprivileged port:
+```console
+export DOCKER_SOCKET=$XDG_RUNTIME_DIR/docker.sock
+export PROXY_PORT=8080
+```
+
 An instance gets its database in one of two ways:
 - **Prebuilt:** set `RDB_URL` (and preferably `RDB_SHA256`) and the database is downloaded before Redis starts. Change `RDB_URL` and run `./gcvctl up <name>` again to replace it; Redis restarts to read it.
 - **Loaded:** put load scripts in `data/<name>/docker-entrypoint-initdb.d/` and run `./gcvctl load <name>`, as described in [Loading Data](#loading-data).
@@ -205,6 +211,9 @@ The host directory mounted as the GCV web app's `config/`, holding its `config.j
 
 ### `PROXY_PORT` (default: `80`) and `GCV_NETWORK` (default: `gcv`)
 The host port of the shared proxy in `proxy/`, and the Docker network joining it to each instance's reverse proxy.
+
+### `DOCKER_SOCKET` (default: `/var/run/docker.sock`)
+The host's Docker socket, which each Traefik reverse proxy reads to discover the services it routes; rootless Docker's is `$XDG_RUNTIME_DIR/docker.sock`.
 
 ## Other Files and Directories
 
