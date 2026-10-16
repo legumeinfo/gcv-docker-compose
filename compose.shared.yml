@@ -1,0 +1,38 @@
+# Puts an instance behind the shared proxy (proxy/compose.yml) instead of publishing
+# TRAEFIK_PORT and GCV_PORT. Its reverse-proxy joins the shared network and is routed
+# everything under MICROSERVICES_PATH; with the all profile, its GCV web app is routed
+# everything under GCV_PATH. Both paths must be unique to the instance. Use with
+# compose.prod.yml; ./gcvctl does.
+
+services:
+  reverse-proxy:
+    ports: !reset []
+    networks:
+      default:
+      gcv:
+    # Without the traefik.zone label, the instance's own reverse-proxy ignores these.
+    labels: !override
+      - "traefik.enable=true"
+      - "gcv.proxy=shared"
+      - "traefik.docker.network=${GCV_NETWORK:-gcv}"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME}.rule=PathPrefix(`${MICROSERVICES_PATH:?set MICROSERVICES_PATH for the shared proxy}/`)"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME}.entrypoints=web"
+      - "traefik.http.services.${COMPOSE_PROJECT_NAME}.loadbalancer.server.port=80"
+
+  gcv:
+    ports: !reset []
+    networks:
+      default:
+      gcv:
+    labels:
+      - "traefik.enable=true"
+      - "gcv.proxy=shared"
+      - "traefik.docker.network=${GCV_NETWORK:-gcv}"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME}-app.rule=PathPrefix(`${GCV_PATH:-/gcv/}`)"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME}-app.entrypoints=web"
+      - "traefik.http.services.${COMPOSE_PROJECT_NAME}-app.loadbalancer.server.port=80"
+
+networks:
+  gcv:
+    name: ${GCV_NETWORK:-gcv}
+    external: true

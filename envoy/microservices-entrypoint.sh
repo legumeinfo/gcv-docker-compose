@@ -3,13 +3,6 @@
 # runs scripts in the /docker-entrypoint.d/ directory before executing Envoy's actual entrypoint script.
 # adapted from NGINX: https://github.com/nginxinc/docker-nginx/blob/master/entrypoint/docker-entrypoint.sh
 
-# ensure envsubst is installed
-apt-get update && apt-get upgrade -y \
-    && apt-get install --no-install-recommends -y gettext-base \
-    && apt-get autoremove -y && apt-get clean \
-    && rm -rf /tmp/* /var/tmp/* \
-    && rm -rf /var/lib/apt/lists/*
-
 set -e
 
 if [ "${loglevel}" = "off" ]; then

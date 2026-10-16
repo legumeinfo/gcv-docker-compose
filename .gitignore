@@ -1,2 +1,5 @@
 # microservice related
 *.rdb
+
+# instance configuration, written per deployment
+instances/*.env

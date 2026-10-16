@@ -4,7 +4,7 @@ services:
     profiles: [gcv, all]
 
   reverse-proxy:
-    image: traefik:v3.3
+    image: traefik:v3.7
     ports:
       - "${TRAEFIK_PORT:-80}:80"
     environment:
@@ -13,7 +13,7 @@ services:
       - TRAEFIK_ENTRYPOINTS_WEB_ADDRESS=:80
       - TRAEFIK_ENTRYPOINTS_GRPC_ADDRESS=:81
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ${DOCKER_SOCKET:-${XDG_RUNTIME_DIR:?set XDG_RUNTIME_DIR, or DOCKER_SOCKET to the Docker socket}/docker.sock}:/var/run/docker.sock:ro
     labels:
       - "traefik.enable=true"
     profiles: [services, all]
@@ -36,15 +36,34 @@ services:
       - "traefik.http.routers.envoy.entrypoints=web"
     profiles: [services, all]
 
+  # Fetches a prebuilt database from RDB_URL into the Redis data directory before Redis
+  # starts; does nothing when RDB_URL is unset. See redis/fetch-rdb.sh.
+  redis_data:
+    image: curlimages/curl:8.11.1
+    user: "0"
+    environment:
+      RDB_URL: ${RDB_URL:-}
+      RDB_SHA256: ${RDB_SHA256:-}
+    volumes:
+      - ./redis/fetch-rdb.sh:/fetch-rdb.sh:ro
+      - ${REDIS_DATA_DIR:-./data/redis}:/data:rw
+    entrypoint: ["/bin/sh", "/fetch-rdb.sh"]
+    profiles: [redis_loader, services, all]
+
   redis:
     image: redis/redis-stack-server:7.4.0-v3
+    depends_on:
+      redis_data:
+        condition: service_completed_successfully
+        # Reads a newly fetched database only on restart.
+        restart: true
     healthcheck:
       test: "redis-cli ping | grep -q PONG"
       start_period: ${REDIS_START_PERIOD:-90s}
     expose:
       - "6379"
     volumes:
-      - ./data/redis:/data:rw
+      - ${REDIS_DATA_DIR:-./data/redis}:/data:rw
     environment:
       REDIS_ARGS: "--save ''"
     profiles: [redis_loader, services, all]
@@ -233,5 +252,5 @@ services:
     environment:
       REDIS_HOST: redis
     volumes:
-      - ./data/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d:rw
+      - ${INITDB_DIR:-./data/docker-entrypoint-initdb.d}:/docker-entrypoint-initdb.d:rw
     profiles: [redis_loader]

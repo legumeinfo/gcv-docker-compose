@@ -128,6 +128,33 @@ More thorough documentation is available in the `redis_loader` [microservice doc
 This includes instructions on how to use the `redis_loader` to load data from a [Chado](http://gmod.org/wiki/Chado_-_Getting_Started) database.
 
 
+## Several Instances on One Host
+One checkout can run any number of instances, each a Compose project with its own database, behind one shared reverse proxy.
+The `gcvctl` script runs them:
+```console
+./gcvctl proxy            # start the shared proxy, once
+./gcvctl up glycine       # start the instance configured by instances/glycine.env
+./gcvctl ls               # list the configured instances
+./gcvctl down glycine
+```
+
+Each instance is configured by `instances/<name>.env`; copy `instances/example.env.sample` to start one.
+Its `MICROSERVICES_PATH` must be unique: the shared proxy routes everything under it to that instance's own reverse proxy, which it finds by the labels `compose.shared.yml` gives it.
+With `COMPOSE_PROFILES=all`, the instance's GCV web app is routed everything under its `GCV_PATH`, which must be unique too, and reads its `GCV_CONFIG`.
+Starting an instance is therefore all it takes to route it; no proxy configuration needs editing.
+An instance's database is stored in `data/<name>/redis/`.
+
+The reverse proxies expect [rootless Docker](https://docs.docker.com/engine/security/rootless/)'s socket, `$XDG_RUNTIME_DIR/docker.sock`; with rootful Docker, point them at its socket instead:
+```console
+export DOCKER_SOCKET=/var/run/docker.sock
+```
+Rootless Docker binds the shared proxy's default port, 80, only if unprivileged ports start at 80 or below (`sysctl net.ipv4.ip_unprivileged_port_start`); otherwise set `PROXY_PORT` to a higher one.
+
+An instance gets its database in one of two ways:
+- **Prebuilt:** set `RDB_URL` (and preferably `RDB_SHA256`) and the database is downloaded before Redis starts. Change `RDB_URL` and run `./gcvctl up <name>` again to replace it; Redis restarts to read it.
+- **Loaded:** put load scripts in `data/<name>/docker-entrypoint-initdb.d/` and run `./gcvctl load <name>`, as described in [Loading Data](#loading-data).
+
+
 ## Environment Variables
 The services defined in the Compose files can be configured via the following environment variables.
 We recommend setting these variables via the `.env` file [described below](#env).
@@ -168,6 +195,25 @@ This sets how long Docker Compose will wait for Redis to start before the servic
 This value will need to be increased when loading a relatively large Redis `.rdb` database file.
 See the [Docker Compose documentation](https://docs.docker.com/compose/compose-file/#specifying-durations) for valid values.
 
+
+### `REDIS_DATA_DIR` (default: `./data/redis`; `./data/<name>/redis` with `gcvctl`)
+The host directory holding the Redis database file.
+
+### `INITDB_DIR` (default: `./data/docker-entrypoint-initdb.d`; `./data/<name>/docker-entrypoint-initdb.d` with `gcvctl`)
+The host directory of scripts the `redis_loader` service runs when the database is empty.
+
+### `RDB_URL` and `RDB_SHA256` (default: unset)
+A prebuilt database to download into `REDIS_DATA_DIR` before Redis starts, and its SHA-256 digest.
+The download is skipped when the database in place came from the same URL and matches the digest, and a download that doesn't match is refused, leaving the database in place.
+
+### `GCV_CONFIG` (default: `./config/config.json`)
+The GCV web app's `config.json`, mounted over the one in its image, whose `config/img/` it refers to; give each instance with the web app its own, listing its servers.
+
+### `PROXY_PORT` (default: `80`) and `GCV_NETWORK` (default: `gcv`)
+The host port of the shared proxy in `proxy/`, and the Docker network joining it to each instance's reverse proxy.
+
+### `DOCKER_SOCKET` (default: `$XDG_RUNTIME_DIR/docker.sock`)
+The host's Docker socket, which each Traefik reverse proxy reads to discover the services it routes. The default is rootless Docker's; rootful Docker's is `/var/run/docker.sock`.
 
 ## Other Files and Directories
 
