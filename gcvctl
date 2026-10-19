@@ -3,14 +3,14 @@
 # named for, and configured by, instances/<name>.env, behind the shared proxy in proxy/.
 #
 #   ./gcvctl proxy                   start the shared proxy
-#   ./gcvctl up <name>...            start instances, fetching each one's RDB_URL if set
-#   ./gcvctl down <name>...          stop instances
+#   ./gcvctl up <name>... | all      start instances, fetching each one's RDB_URL if set
+#   ./gcvctl down <name>... | all    stop instances
 #   ./gcvctl load <name>...          load instances' databases with redis_loader
 #   ./gcvctl ls                      list the instances
 #   ./gcvctl compose <name> <args>   run any docker compose command for one instance
 #
-# An instance's database and load scripts are in data/<name>/ unless its env file sets
-# REDIS_DATA_DIR or INITDB_DIR.
+# all is every instance in instances/. An instance's database and load scripts are in
+# data/<name>/ unless its env file sets REDIS_DATA_DIR or INITDB_DIR.
 
 set -eu
 cd "$(dirname "$0")"
@@ -35,10 +35,28 @@ instance_compose() (
     -f compose.yml -f compose.prod.yml -f compose.shared.yml "$@"
 )
 
+names() {
+  for env in instances/*.env; do
+    if [ -f "$env" ]; then basename "$env" .env; fi
+  done
+}
+
 each() {
   action=$1
   shift
   [ $# -gt 0 ] || usage
+  if [ "$*" = all ] && [ "$action" != load ]; then
+    if [ -f instances/all.env ]; then
+      echo "gcvctl: all means every instance, so an instance can't be named all" >&2
+      exit 1
+    fi
+    # Instance names have no spaces or glob characters.
+    set -- $(names)
+    if [ $# -eq 0 ]; then
+      echo "gcvctl: no instances (instances/*.env)" >&2
+      exit 1
+    fi
+  fi
   for name; do
     echo "== $name"
     case $action in
@@ -55,11 +73,7 @@ shift
 case $command in
   proxy) docker compose -f proxy/compose.yml up -d ;;
   up | down | load) each "$command" "$@" ;;
-  ls)
-    for env in instances/*.env; do
-      if [ -f "$env" ]; then basename "$env" .env; fi
-    done
-    ;;
+  ls) names ;;
   compose)
     [ $# -gt 1 ] || usage
     instance_compose "$@"

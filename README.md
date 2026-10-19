@@ -134,8 +134,9 @@ The `gcvctl` script runs them:
 ```console
 ./gcvctl proxy            # start the shared proxy, once
 ./gcvctl up glycine       # start the instance configured by instances/glycine.env
+./gcvctl up all           # start every instance in instances/
 ./gcvctl ls               # list the configured instances
-./gcvctl down glycine
+./gcvctl down glycine     # or ./gcvctl down all
 ```
 
 Each instance is configured by `instances/<name>.env`; copy `instances/example.env.sample` to start one.
