@@ -206,6 +206,10 @@ The host directory of scripts the `redis_loader` service runs when the database 
 A prebuilt database to download into `REDIS_DATA_DIR` before Redis starts, and its SHA-256 digest.
 The download is skipped when the database in place came from the same URL and matches the digest, and a download that doesn't match is refused, leaving the database in place.
 
+### `GCV_IMAGE` (default: the release `compose.prod.yml` pins)
+The GCV web app's image, such as one built from a branch to try a feature on one instance: `docker build -t gcv:my-feature gcv` in the `gcv` submodule checked out to it, then `GCV_IMAGE=gcv:my-feature`.
+An image built on the host is used as it is; one in a registry is pulled if it's missing.
+
 ### `GCV_CONFIG` (default: `./config/config.json`)
 The GCV web app's `config.json`, mounted over the one in its image, whose `config/img/` it refers to; give each instance with the web app its own, listing its servers.
 
